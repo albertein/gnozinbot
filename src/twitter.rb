@@ -15,12 +15,11 @@ module GnozinBot
             resource = "/1/statuses/update.xml"
             parameters = {:status => message}
             if in_reply_to != -1
-                parameters["in_reply_to_status_id"]
+                parameters["in_reply_to_status_id"] = in_reply_to
             end
             puts resource
             puts parameters
-            response = $session.post(resource, parameters)
-            puts response.body
+            $session.post(resource, parameters)
         end
     end
 end

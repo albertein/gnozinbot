@@ -11,13 +11,14 @@ module GnozinBot
         end
         def Answer.analyze_status(status)
             status_id = Integer(status.elements["id"].text)
+            screen_name = status.elements["user"].elements["screen_name"].text
             if status_id > $last_processed_id
                 $last_processed_id = status_id
             end
             text = status.elements["text"].text.downcase
             answer, message = Answer.try_grammar_nazy(text)
             if answer
-                Twitter.twitt(message, status_id)
+                Twitter.twitt("@#{screen_name} #{message}", status_id)
             end
         end
     
