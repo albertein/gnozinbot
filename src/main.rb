@@ -14,27 +14,30 @@ def main()
         puts "CONSUMER_SECRET YOUR_CONSUMER_SECRET"
         return
     end
+
     File.open(config_file, "r") do |file|
         while (line = file.gets)
             sections = line.split(/\s/)
             config[sections[0]] = sections[1]
         end
     end
+
     consumer = OAuth::Consumer.new(config["CONSUMER_KEY"], config["CONSUMER_SECRET"], {
         :site => "https://api.twitter.com",
         :scheme => :header
     })
     request = consumer.get_request_token
-    puts "Launching browser"
-    Launchy.open request.authorize_url
-    puts "Please check out your browser and aothorize the app"
-    puts "Did you authorize the app? Yes or No?"
-    if not STDIN.gets =~ /^[Yy]/
-        puts "Thats so sad, well, see you around then!"
+    Launchy.open request.authorize_url #launch browser for auth
+    puts "Please authorize the access to the application on the browser that i've just launched"
+    puts "Did you authorize the app? [Y/N]:"
+    if not STDIN.readline.chomp =~ /^[Yy]/
+        puts "That's so sad, well, see you around!"
         return
     end
+    puts "Please type the twitter auth PIN:"
+    session = request.get_access_token(:oauth_verifier => STDIN.readline.chomp)
 end
 
 main
-print get_weather_description
-print get_full_weather
+#print get_weather_description
+#print get_full_weather
